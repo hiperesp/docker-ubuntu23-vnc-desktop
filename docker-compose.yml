@@ -7,3 +7,8 @@ services:
     ports:
       - 6080:6080
       - 5900:5900
+    environment:
+      - DISPLAY=:1
+      - RESOLUTION=1920x1080x24
+      - USERNAME=hiperesplopes
+      - PASSWORD=senha123456

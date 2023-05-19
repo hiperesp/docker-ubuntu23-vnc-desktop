@@ -35,31 +35,10 @@ RUN apt-get install -y firefox-esr
 
 # </INSTALL FIREFOX>
 
-# Set the environment variables
-ENV DISPLAY=:1 \
-    VNC_PORT=5900 \
-    NOVNC_PORT=6080 \
-    RESOLUTION=1920x1080x24 \
-    USERNAME=hiperesp \
-    PASSWORD=senha123
-
 # Copy the startup script
-COPY scripts/setup.sh /usr/local/bin/
-COPY scripts/startup.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/setup.sh /usr/local/bin/startup.sh
+COPY scripts /usr/local/bin/scripts
+RUN chmod -R +x /usr/local/bin/scripts
 
-# Create a user
-RUN useradd --create-home --shell /bin/bash --groups sudo --password $(openssl passwd -1 $PASSWORD) $USERNAME \
-    && echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/$USERNAME \
-    && chmod 0440 /etc/sudoers.d/$USERNAME
+EXPOSE 5900 6080
 
-
-EXPOSE $VNC_PORT $NOVNC_PORT
-
-CMD su - $USERNAME -c "\
-    DISPLAY=$DISPLAY \
-    VNC_PORT=$VNC_PORT \
-    NOVNC_PORT=$NOVNC_PORT \
-    RESOLUTION=$RESOLUTION \
-    /usr/local/bin/setup.sh\
-"
+CMD ["/usr/local/bin/scripts/setup.sh"]
